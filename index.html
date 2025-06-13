@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Taller Promesas - Casos Interactivos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+  <div class="w-full max-w-xl p-6 bg-white rounded shadow text-lg text-gray-800">
+    <h1 class="text-2xl font-bold mb-4 text-blue-700">Taller Promesas: Casos Interactivos</h1>
+    <label class="block mb-2 font-semibold">Selecciona un caso:</label>
+    <select id="casoSelect" class="mb-4 p-2 border rounded w-full">
+      <option value="1">Caso 1</option>
+      <option value="2">Caso 2</option>
+        <option value="3">Caso 3</option>
+        <option value="4">Caso 4</option>
+        <option value="5">Caso 5</option>
+        <option value="6">Caso 6</option>
+        <option value="7">Caso 7</option>
+        <option value="8">Caso 8</option>
+        <option value="9">Caso 9</option>
+        <option value="10">Caso 10</option>
+        <option value="11">Caso 11</option>
+        <option value="12">Caso 12</option>
+        <option value="13">Caso 13</option>
+        <option value="14">Caso 14</option>
+        <option value="15">Caso 15</option>
+      <option value="16">Caso 16</option>   
+        <option value="17">Caso 17</option>
+        <option value="18">Caso 18</option>
+        <option value="19">Caso 19</option>
+        <option value="20">Caso 20</option>
+      <option value="21">Caso 21</option>
+        <option value="22">Caso 22</option>
+        <option value="23">Caso 23</option>
+        <option value="24">Caso 24</option>
+        <option value="25">Caso 25</option>
+    </select>
+    <div id="resultados"></div>
+  </div>
+  <script type="module">
+    // Función para mostrar resultados en el div
+    function mostrar(tipo, mensaje, exito) {
+      const color = exito
+        ? "bg-gradient-to-r from-green-100 via-green-50 to-white border-green-400 text-green-900"
+        : "bg-gradient-to-r from-red-100 via-red-50 to-white border-red-400 text-red-900";
+      const icono = exito
+        ? `<div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-200 shadow"><svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>`
+        : `<div class="flex items-center justify-center w-10 h-10 rounded-full bg-red-200 shadow"><svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></div>`;
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML += `
+        <div class="flex items-center gap-4 my-6 p-5 border-l-8 rounded-xl shadow-lg ${color}">
+          ${icono}
+          <div>
+            <div class="font-bold text-lg mb-1 tracking-wide">${tipo}</div>
+            <div class="text-base leading-relaxed">${mensaje}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Limpiar resultados
+    function limpiarResultados() {
+      document.getElementById('resultados').innerHTML = '';
+    }
+
+    // Ejecutar el caso seleccionado
+    async function ejecutarCaso(num) {
+      limpiarResultados();
+      try {
+        // Importa dinámicamente el archivo del caso seleccionado
+        const modulo = await import(`./caso${num}.js`);
+        // Llama a la función principal del caso, pasando la función mostrar
+        await modulo[`ejecutarCaso${num}`](mostrar);
+      } catch (e) {
+        mostrar('Error', 'No se pudo cargar el caso seleccionado.', false);
+      }
+    }
+
+    // Inicializar con el primer caso
+    const select = document.getElementById('casoSelect');
+    ejecutarCaso(select.value);
+
+    // Cambiar de caso al seleccionar otro
+    select.addEventListener('change', function() {
+      ejecutarCaso(this.value);
+    });
+  </script>
+</body>
+</html>
